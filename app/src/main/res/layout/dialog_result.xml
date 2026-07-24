@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layoutDirection="rtl"
+    android:background="@color/background">
+
+    <View
+        android:id="@+id/cardResultBg"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@color/status_registering" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvResultIcon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:text="✓"
+            android:textSize="34sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/vazirmatn_bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_circle_primary" />
+
+        <TextView
+            android:id="@+id/tvResultMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="عملیات موفق"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"
+            android:fontFamily="@font/vazirmatn_bold"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvResultSub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="توضیحات بیشتر"
+            android:textSize="13sp"
+            android:textColor="@color/text"
+            android:fontFamily="@font/vazirmatn_regular"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginBottom="24dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnResultOk"
+            android:layout_width="160dp"
+            android:layout_height="48dp"
+            android:text="متوجه شدم"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:fontFamily="@font/vazirmatn_bold"
+            app:backgroundTint="@color/primary_dark"
+            app:cornerRadius="24dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

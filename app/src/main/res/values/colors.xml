@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#F3F3F7</color>
+    <color name="text_dark">#393A3D</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#7D80C4</color>
+    <color name="primary_dark">#284EA1</color>
+    <color name="card_background">#D9D9D9</color>
+    <color name="brown">#8B5A2B</color>
+    <color name="blue">#4A90E2</color>
+    <color name="gray">#88888D</color>
+    <color name="bottom_nav_background">#F0F0F0</color>
+    <color name="text">#6D6565</color>
+
+    <!-- Sara Login Colors -->
+    <color name="sara_background">#F3F3F7</color>
+    <color name="sara_card_background">#FFFFFF</color>
+
+    <!-- New Status Button Colors -->
+    <color name="status_registering">#2A7A4B</color>
+    <color name="status_full">#BA7B1B</color>
+    <color name="status_registered">#445EAC</color>
+    <color name="status_expired">#C23B22</color>
+    <color name="status_text">#F3F3F7</color>
+
+</resources>

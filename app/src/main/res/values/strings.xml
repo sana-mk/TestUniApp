@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Myjava</string>
+    <string name="conferences_title">همایش ها</string>
+
+    <!-- مقادیر placeholder برای پیش‌نمایش layout در طراح -->
+    <string name="conference_title">عنوان همایش</string>
+    <string name="conference_organizer">ارائه دهنده: لوم لیبسام</string>
+    <string name="conference_place">محل برگزاری: امفی تئاتر فاز 2</string>
+    <string name="conference_date">تاریخ: 23 بهمن 1404</string>
+    <string name="conference_time">ساعت: 15:30</string>
+
+    <!-- label format — %s جای مقدار واقعی از مدل میاد (استفاده در ConferenceAdapter) -->
+    <string name="label_organizer">ارائه دهنده: %s</string>
+    <string name="label_place">محل برگزاری: %s</string>
+    <string name="label_date">تاریخ: %s</string>
+    <string name="label_time">ساعت: %s</string>
+
+    <!-- وضعیت دکمه ثبت‌نام -->
+    <string name="register_open">ثبت نام کنید</string>
+    <string name="register_warning">اتمام ظرفیت</string>
+    <string name="register_full">ثبت نام شده</string>
+    <string name="register_closed">منقضی شده</string>
+</resources>

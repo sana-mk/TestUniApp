@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/margin_medium"
+    android:layout_marginVertical="@dimen/margin_small"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/card_background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_medium">
+
+        <!-- Favorite Icon -->
+        <ImageView
+            android:id="@+id/ivFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/like"
+            app:tint="@color/status_expired"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"/>
+
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/margin_small" />
+
+        <LinearLayout
+            android:id="@+id/llContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            app:layout_constraintStart_toEndOf="@id/ivFavorite"
+            app:layout_constraintEnd_toStartOf="@id/ivImage"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/conference_title"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                android:textColor="@color/text"
+                android:fontFamily="@font/vazirmatn_bold" />
+
+            <TextView
+                android:id="@+id/tvOrganizer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/conference_organizer"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/text"
+                android:layout_marginTop="@dimen/margin_small"
+                android:fontFamily="@font/vazirmatn_medium" />
+
+            <!-- Place -->
+            <TextView
+                android:id="@+id/tvPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/conference_place"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/text"
+                android:layout_marginTop="@dimen/margin_small"
+                android:fontFamily="@font/vazirmatn_regular" />
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/conference_date"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/text"
+                android:layout_marginTop="@dimen/margin_small"
+                android:fontFamily="@font/vazirmatn_regular" />
+
+            <!-- Time -->
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/conference_time"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/text"
+                android:layout_marginTop="@dimen/margin_small"
+                android:fontFamily="@font/vazirmatn_regular" />
+
+        </LinearLayout>
+
+        <!-- Status Section -->
+        <LinearLayout
+            android:id="@+id/llStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/llContent"
+            app:layout_constraintEnd_toStartOf="@id/ivImage"
+            app:layout_constraintStart_toEndOf="@id/ivFavorite"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_full"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginStart="@dimen/margin_small"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/status_text"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:fontFamily="@font/vazirmatn_bold"
+                android:layout_marginEnd="@dimen/margin_medium"/>
+
+            <TextView
+                android:id="@+id/tvStatusLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="وضعیت:"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/text"
+                android:fontFamily="@font/vazirmatn_medium" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

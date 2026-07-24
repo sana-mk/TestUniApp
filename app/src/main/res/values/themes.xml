@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.Myjava" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="android:fontFamily">@font/vazir</item>
+        <item name="fontFamily">@font/vazir</item>
+
+    </style>
+
+    <style name="Theme.Myjava" parent="Base.Theme.Myjava"/>
+
+    <!-- Bottom Navigation View Style -->
+    <style name="Widget.Myjava.BottomNavigationView"
+        parent="Widget.Material3.BottomNavigationView">
+
+        <item name="itemIconSize">@dimen/bottom_nav_icon_size</item>
+        <item name="itemActiveIndicatorStyle">
+            @style/Widget.Myjava.BottomNavigationView.ActiveIndicator
+        </item>
+
+    </style>
+
+    <style name="Widget.Myjava.BottomNavigationView.ActiveIndicator"
+        parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+
+        <item name="android:width">0dp</item>
+        <item name="android:height">0dp</item>
+
+    </style>
+
+</resources>
