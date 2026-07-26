@@ -8,6 +8,7 @@
     android:layoutDirection="rtl"
     android:background="@color/background">
 
+
     <View
         android:id="@+id/cardResultBg"
         android:layout_width="match_parent"

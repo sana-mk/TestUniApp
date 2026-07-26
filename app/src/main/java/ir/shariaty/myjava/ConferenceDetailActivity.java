@@ -7,51 +7,27 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import ir.shariaty.myjava.api.ApiService;
 import ir.shariaty.myjava.api.RetrofitClient;
 import ir.shariaty.myjava.database.AppDatabaseHelper;
 import ir.shariaty.myjava.model.Conference;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * صفحه جزئیات همایش
- *
- * رفتار بر اساس وضعیت:
- *  REGISTERING → دکمه بنفش/آبی  → ثبت‌نام
- *  REGISTERED  → دکمه سبز       → لغو ثبت‌نام
- *  FULL        → دکمه نارنجی    → غیرفعال
- *  EXPIRED     → دکمه قرمز      → دانلود فیلم (آنلاین) یا غیرفعال (حضوری)
- *
- * برای اتصال به API واقعی:
- *  1. BASE_URL را در RetrofitClient تنظیم کنید
- *  2. توکن را از SharedPreferences بخوانید
- *  3. مقدار USE_LOCAL_DB را false کنید
- */
-public class ConferenceDetailActivity extends AppCompatActivity {
+public class ConferenceDetailActivity extends BaseActivity {
 
-    // ─── کلیدهای Intent ──────────────────────────────────────
     public static final String EXTRA_CONFERENCE_ID = "conference_id";
     public static final String EXTRA_TITLE         = "title";
     public static final String EXTRA_ORGANIZER     = "organizer";
@@ -65,18 +41,13 @@ public class ConferenceDetailActivity extends AppCompatActivity {
     public static final String EXTRA_IS_ONLINE     = "is_online";
     public static final String EXTRA_DOWNLOAD_URL  = "download_url";
 
-    /** true = دیتابیس محلی | false = API واقعی */
     private static final boolean USE_LOCAL_DB = true;
 
-    // ─── Views ───────────────────────────────────────────────
-    private ImageView            ivClose;
-    private TextView             tvTitle, tvOrganizer, tvSummary, tvAddress;
-    private TextView             tvDate, tvTime, tvCapacity, tvNote;
-    private MaterialButton       btnCollaboration, btnAction;
-    private BottomNavigationView bottomNav;
-    private View                 rootView;
+    private TextView       tvTitle, tvOrganizer, tvSummary, tvAddress;
+    private TextView       tvDate, tvTime, tvCapacity, tvNote;
+    private MaterialButton btnCollaboration, btnAction;
+    private View           rootView;
 
-    // ─── داده ────────────────────────────────────────────────
     private int               conferenceId;
     private Conference.Status currentStatus;
     private boolean           isOnline;
@@ -85,12 +56,8 @@ public class ConferenceDetailActivity extends AppCompatActivity {
     private AppDatabaseHelper dbHelper;
     private ApiService        apiService;
 
-
-
-    // توکن — بعداً از SharedPreferences بخوانید
     private final String authToken = "Bearer YOUR_TOKEN_HERE";
 
-    // ─────────────────────────────────────────────────────────
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,15 +68,12 @@ public class ConferenceDetailActivity extends AppCompatActivity {
 
         bindViews();
         loadDataFromIntent();
-        setupBottomNav();
+        setupHeader(v -> goHomeAndRefresh());
+        setupBottomNav(R.id.nav_home);
     }
 
-    // ─── bind ─────────────────────────────────────────────────
     private void bindViews() {
         rootView         = findViewById(android.R.id.content);
-        // toolbar gradient — دسترسی به ivClose از داخل include
-        View toolbar     = findViewById(R.id.toolbarGradient);
-        ivClose          = toolbar.findViewById(R.id.ivToolbarClose);
         tvTitle          = findViewById(R.id.tvDetailTitle);
         tvOrganizer      = findViewById(R.id.tvDetailOrganizer);
         tvSummary        = findViewById(R.id.tvDetailSummary);
@@ -120,10 +84,8 @@ public class ConferenceDetailActivity extends AppCompatActivity {
         tvNote           = findViewById(R.id.tvDetailNote);
         btnCollaboration = findViewById(R.id.btnCollaboration);
         btnAction        = findViewById(R.id.btnAction);
-        bottomNav        = findViewById(R.id.bottomNav);
     }
 
-    // ─── بارگذاری داده از Intent ─────────────────────────────
     private void loadDataFromIntent() {
         Intent intent = getIntent();
 
@@ -162,28 +124,21 @@ public class ConferenceDetailActivity extends AppCompatActivity {
         }
 
         configureActionButton();
-
-        ivClose.setOnClickListener(v -> goHomeAndRefresh());
-        btnCollaboration.setOnClickListener(v -> showTicketDialog());
+        btnCollaboration.setOnClickListener(v -> openCollaborationTicket());
     }
 
-    // ─── تنظیم دکمه بر اساس وضعیت ───────────────────────────
     private void configureActionButton() {
         switch (currentStatus) {
-
             case REGISTERING:
-                // دکمه ثبت‌نام — بنفش
                 btnAction.setText("ثبت نام در همایش");
                 btnAction.setBackgroundTintList(tint(R.color.status_registered));
                 btnAction.setEnabled(true);
                 btnAction.setAlpha(1f);
                 btnAction.setOnClickListener(v -> doRegister());
-                // علاقه‌مند به همکاری فقط برای این وضعیت نمایش داده می‌شود
                 btnCollaboration.setVisibility(View.VISIBLE);
                 break;
 
             case REGISTERED:
-                // دکمه لغو ثبت‌نام — سبز
                 btnAction.setText("لغو ثبت‌نام");
                 btnAction.setBackgroundTintList(tint(R.color.status_registering));
                 btnAction.setEnabled(true);
@@ -193,7 +148,6 @@ public class ConferenceDetailActivity extends AppCompatActivity {
                 break;
 
             case FULL:
-                // اتمام ظرفیت — نارنجی، غیرفعال
                 btnAction.setText("اتمام ظرفیت");
                 btnAction.setBackgroundTintList(tint(R.color.status_full));
                 btnAction.setEnabled(false);
@@ -202,7 +156,6 @@ public class ConferenceDetailActivity extends AppCompatActivity {
                 break;
 
             case EXPIRED:
-                // منقضی شده — قرمز
                 if (isOnline && !TextUtils.isEmpty(downloadUrl)) {
                     btnAction.setText("دانلود فیلم ضبط شده");
                     btnAction.setBackgroundTintList(tint(R.color.status_expired));
@@ -220,7 +173,14 @@ public class ConferenceDetailActivity extends AppCompatActivity {
         }
     }
 
-    // ─── ثبت‌نام ──────────────────────────────────────────────
+    private void openCollaborationTicket() {
+        Intent intent = new Intent(this, CollaborationTicketActivity.class);
+        intent.putExtra(CollaborationTicketActivity.EXTRA_CONFERENCE_ID, conferenceId);
+        intent.putExtra(CollaborationTicketActivity.EXTRA_CONFERENCE_TITLE,
+                getIntent().getStringExtra(EXTRA_TITLE));
+        startActivity(intent);
+    }
+
     private void doRegister() {
         btnAction.setEnabled(false);
 
@@ -253,7 +213,6 @@ public class ConferenceDetailActivity extends AppCompatActivity {
                 });
     }
 
-    // ─── لغو ثبت‌نام ─────────────────────────────────────────
     private void doCancel() {
         new MaterialAlertDialogBuilder(this)
                 .setTitle("لغو ثبت‌نام")
@@ -295,15 +254,14 @@ public class ConferenceDetailActivity extends AppCompatActivity {
                 });
     }
 
-    // ─── دیالوگ نتیجه ────────────────────────────────────────
     private void showResultDialog(boolean success, boolean isCancel) {
         View v = LayoutInflater.from(this).inflate(R.layout.dialog_result, null);
 
-        TextView       tvIcon  = v.findViewById(R.id.tvResultIcon);
-        TextView       tvMsg   = v.findViewById(R.id.tvResultMessage);
-        TextView       tvSub   = v.findViewById(R.id.tvResultSub);
-        MaterialButton btnOk   = v.findViewById(R.id.btnResultOk);
-        View           bar     = v.findViewById(R.id.cardResultBg);
+        TextView       tvIcon = v.findViewById(R.id.tvResultIcon);
+        TextView       tvMsg  = v.findViewById(R.id.tvResultMessage);
+        TextView       tvSub  = v.findViewById(R.id.tvResultSub);
+        MaterialButton btnOk  = v.findViewById(R.id.btnResultOk);
+        View           bar    = v.findViewById(R.id.cardResultBg);
 
         if (success) {
             tvIcon.setText("✓");
@@ -338,99 +296,6 @@ public class ConferenceDetailActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // ─── دیالوگ تیکت همکاری ─────────────────────────────────
-    private void showTicketDialog() {
-        View v = LayoutInflater.from(this).inflate(R.layout.dialog_ticket, null);
-
-        EditText       etMsg   = v.findViewById(R.id.etTicketMessage);
-        MaterialButton btnSend = v.findViewById(R.id.btnSendTicket);
-        MaterialButton btnCnl  = v.findViewById(R.id.btnCancelTicket);
-
-        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
-                .setView(v)
-                .setCancelable(true)
-                .create();
-
-        btnCnl.setOnClickListener(btn -> dialog.dismiss());
-
-        btnSend.setOnClickListener(btn -> {
-            String msg = etMsg.getText().toString().trim();
-            if (TextUtils.isEmpty(msg)) {
-                etMsg.setError("لطفاً متن پیام را وارد کنید");
-                return;
-            }
-            dialog.dismiss();
-            sendTicket(msg);
-        });
-
-        dialog.show();
-    }
-
-    // ─── ارسال تیکت ──────────────────────────────────────────
-    private void sendTicket(String message) {
-        if (USE_LOCAL_DB) {
-            showTicketResultDialog(true);
-            return;
-        }
-
-        try {
-            JSONObject json = new JSONObject();
-            json.put("message", message);
-            RequestBody body = RequestBody.create(
-                    json.toString(),
-                    MediaType.parse("application/json; charset=utf-8"));
-
-            apiService.sendCollaborationTicket(authToken, conferenceId, body)
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            showTicketResultDialog(response.isSuccessful());
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            showNetworkError();
-                        }
-                    });
-        } catch (JSONException e) {
-            showNetworkError();
-        }
-    }
-
-    // ─── دیالوگ نتیجه تیکت ──────────────────────────────────
-    private void showTicketResultDialog(boolean success) {
-        View v = LayoutInflater.from(this).inflate(R.layout.dialog_result, null);
-
-        TextView       tvIcon = v.findViewById(R.id.tvResultIcon);
-        TextView       tvMsg  = v.findViewById(R.id.tvResultMessage);
-        TextView       tvSub  = v.findViewById(R.id.tvResultSub);
-        MaterialButton btnOk  = v.findViewById(R.id.btnResultOk);
-        View           bar    = v.findViewById(R.id.cardResultBg);
-
-        if (success) {
-            tvIcon.setText("✓");
-            tvMsg.setText("تیکت ارسال شد!");
-            tvSub.setText("پیام شما با موفقیت به مدیر گروه ارسال گردید.");
-            bar.setBackgroundColor(color(R.color.status_registering));
-            btnOk.setBackgroundTintList(tint(R.color.primary_dark));
-        } else {
-            tvIcon.setText("✗");
-            tvMsg.setText("ارسال ناموفق بود");
-            tvSub.setText("مشکلی در ارسال تیکت پیش آمد. لطفاً دوباره تلاش کنید.");
-            bar.setBackgroundColor(color(R.color.status_expired));
-            btnOk.setBackgroundTintList(tint(R.color.status_expired));
-        }
-
-        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
-                .setView(v)
-                .setCancelable(false)
-                .create();
-
-        btnOk.setOnClickListener(btn -> dialog.dismiss());
-        dialog.show();
-    }
-
-    // ─── دانلود ───────────────────────────────────────────────
     private void openDownload(String url) {
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
@@ -439,7 +304,6 @@ public class ConferenceDetailActivity extends AppCompatActivity {
         }
     }
 
-    // ─── بازگشت به هوم‌پیج ───────────────────────────────────
     private void goHomeAndRefresh() {
         Intent intent = new Intent(this, ConferencesActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -448,26 +312,11 @@ public class ConferenceDetailActivity extends AppCompatActivity {
         finish();
     }
 
-    // ─── Bottom Navigation ────────────────────────────────────
-    private void setupBottomNav() {
-        if (bottomNav == null) return;
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                goHomeAndRefresh();
-                return true;
-            } else if (id == R.id.nav_account) {
-                Toast.makeText(this, "پروفایل", Toast.LENGTH_SHORT).show();
-                return true;
-            } else if (id == R.id.nav_settings) {
-                Toast.makeText(this, "تنظیمات", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            return false;
-        });
+    @Override
+    protected void navigateToHome() {
+        goHomeAndRefresh();
     }
 
-    // ─── Helpers ─────────────────────────────────────────────
     private ColorStateList tint(int colorRes) {
         return ColorStateList.valueOf(ContextCompat.getColor(this, colorRes));
     }
@@ -481,8 +330,6 @@ public class ConferenceDetailActivity extends AppCompatActivity {
     }
 
     private void showNetworkError() {
-        Snackbar.make(rootView,
-                "خطای شبکه. اتصال اینترنت را بررسی کنید.",
-                Snackbar.LENGTH_LONG).show();
+        Snackbar.make(rootView, "خطای شبکه. اتصال اینترنت را بررسی کنید.", Snackbar.LENGTH_LONG).show();
     }
 }

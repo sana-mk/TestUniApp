@@ -20,4 +20,5 @@
     <string name="register_warning">اتمام ظرفیت</string>
     <string name="register_full">ثبت نام شده</string>
     <string name="register_closed">منقضی شده</string>
+
 </resources>
