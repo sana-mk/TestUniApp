@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +21,7 @@ import ir.shariaty.myjava.adapter.ConferenceAdapter;
 import ir.shariaty.myjava.database.AppDatabaseHelper;
 import ir.shariaty.myjava.model.Conference;
 
-public class ConferencesActivity extends AppCompatActivity {
+public class ConferencesActivity extends BaseActivity {
 
     public static final String EXTRA_REFRESH = "refresh";
 
@@ -44,6 +43,7 @@ public class ConferencesActivity extends AppCompatActivity {
         loadConferences();
         setupSearch();
         setupFocusBehavior();
+        setupBottomNav(R.id.nav_home);
     }
 
     @Override
