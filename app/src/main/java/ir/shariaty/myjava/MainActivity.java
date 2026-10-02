@@ -5,21 +5,24 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Random;
-
+import ir.shariaty.myjava.api.ApiService;
+import ir.shariaty.myjava.api.RetrofitClient;
 import ir.shariaty.myjava.database.AppDatabaseHelper;
+import ir.shariaty.myjava.model.LoginModels;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final boolean USE_LOCAL_DATABASE = true;
+    private static final boolean USE_LOCAL_DATABASE = false;
 
     private EditText editTextNationalCode;
     private EditText editTextPassword;
@@ -169,10 +172,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "لطفاً کد ملی را وارد کنید", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (nationalCode.length() != 10) {
-            Toast.makeText(this, "کد ملی باید 10 رقم باشد", Toast.LENGTH_SHORT).show();
-            return false;
-        }
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "لطفاً رمز عبور را وارد کنید", Toast.LENGTH_SHORT).show();
             return false;
@@ -201,8 +200,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loginWithApi(String nationalCode, String password) {
-        Toast.makeText(this, "API login not implemented yet", Toast.LENGTH_SHORT).show();
+    private void loginWithApi(String username, String password) {
+        buttonLogin.setEnabled(false);
+        ApiService apiService = RetrofitClient.getInstance().getApiService();
+
+        LoginModels.LoginRequest request = new LoginModels.LoginRequest(username, password);
+
+        apiService.authenticate(request).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<LoginModels.LoginResponse> call, @NonNull Response<LoginModels.LoginResponse> response) {
+                buttonLogin.setEnabled(true);
+                if (response.isSuccessful() && response.body() != null && response.body().getResult() != null) {
+
+                    String token = response.body().getResult().getAccessToken();
+                    Toast.makeText(MainActivity.this, "خوش آمدید!", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(MainActivity.this, ConferencesActivity.class);
+                    intent.putExtra("TOKEN", token);
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    Toast.makeText(MainActivity.this, "اطلاعات ورود اشتباه است", Toast.LENGTH_SHORT).show();
+                    generateCaptcha();
+                    editTextCaptcha.setText("");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LoginModels.LoginResponse> call, @NonNull Throwable t) {
+                buttonLogin.setEnabled(true);
+                Toast.makeText(MainActivity.this, "خطای شبکه", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void navigateToConferences() {
