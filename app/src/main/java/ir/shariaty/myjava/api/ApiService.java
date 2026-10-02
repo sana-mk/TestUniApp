@@ -3,6 +3,7 @@ package ir.shariaty.myjava.api;
 import java.util.List;
 
 import ir.shariaty.myjava.model.Conference;
+import ir.shariaty.myjava.model.CourseModels;
 import ir.shariaty.myjava.model.LoginModels;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -19,6 +20,9 @@ public interface ApiService {
 
     @POST("api/TokenAuth/Authenticate")
     Call<LoginModels.LoginResponse> authenticate(@Body LoginModels.LoginRequest request);
+
+    @GET("api/services/app/Course/GetAll")
+    Call<CourseModels.CourseApiResponse> getCourses(@Header("Authorization") String token);
 
     //باقی متد های مربوط به لاگین استفاده نشده اند
     @POST("auth/login/")

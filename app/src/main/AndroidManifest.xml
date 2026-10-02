@@ -38,6 +38,9 @@
             android:name=".CollaborationTicketActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".CoursesActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

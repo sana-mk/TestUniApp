@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                     String token = response.body().getResult().getAccessToken();
                     Toast.makeText(MainActivity.this, "خوش آمدید!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(MainActivity.this, ConferencesActivity.class);
+                    Intent intent = new Intent(MainActivity.this, CoursesActivity.class);
                     intent.putExtra("TOKEN", token);
                     startActivity(intent);
                     finish();

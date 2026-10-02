@@ -51,7 +51,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
                 android:layout_gravity="end"
-                android:text="کد ملی:"
+                android:text="نام کاربری:"
                 android:textColor="@color/text"
                 android:textSize="16sp"/>
 
