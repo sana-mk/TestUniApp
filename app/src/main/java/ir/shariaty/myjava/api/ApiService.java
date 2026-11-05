@@ -10,7 +10,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -22,68 +21,38 @@ public interface ApiService {
     Call<LoginModels.LoginResponse> authenticate(@Body LoginModels.LoginRequest request);
 
     @GET("api/services/app/Course/GetAll")
-    Call<CourseModels.CourseApiResponse> getCourses(@Header("Authorization") String token);
+    Call<CourseModels.CourseApiResponse> getCourses();
 
-    //باقی متد های مربوط به لاگین استفاده نشده اند
     @POST("auth/login/")
     Call<ResponseBody> login(@Body RequestBody body);
 
     @POST("auth/logout/")
-    Call<ResponseBody> logout(@Header("Authorization") String token);
+    Call<ResponseBody> logout();
 
-    @POST("auth/refresh-token/")
-    Call<ResponseBody> refreshToken(@Header("Authorization") String refreshToken);
+    @POST("api/TokenAuth/RefreshToken")
+    Call<LoginModels.RefreshTokenResponse> refreshToken(@Query("refreshToken") String refreshToken);
 
     @GET("user/profile/")
-    Call<ResponseBody> getProfile(@Header("Authorization") String token);
-
+    Call<ResponseBody> getProfile();
 
     @GET("conferences/")
-    Call<List<Conference>> getConferences(
-            @Header("Authorization") String token,
-            @Query("topic") String topic
-    );
-
+    Call<List<Conference>> getConferences(@Query("topic") String topic);
 
     @GET("conferences/{id}/")
-    Call<Conference> getConferenceDetail(
-            @Header("Authorization") String token,
-            @Path("id") int conferenceId
-    );
-
+    Call<Conference> getConferenceDetail(@Path("id") int conferenceId);
 
     @POST("conferences/{id}/register/")
-    Call<ResponseBody> registerConference(
-            @Header("Authorization") String token,
-            @Path("id") int conferenceId
-    );
+    Call<ResponseBody> registerConference(@Path("id") int conferenceId);
 
     @POST("conferences/{id}/cancel/")
-    Call<ResponseBody> cancelRegistration(
-            @Header("Authorization") String token,
-            @Path("id") int conferenceId
-    );
-
+    Call<ResponseBody> cancelRegistration(String authToken, @Path("id") int conferenceId);
 
     @PUT("conferences/{id}/favorite/")
-    Call<ResponseBody> updateFavorite(
-            @Header("Authorization") String token,
-            @Path("id") int conferenceId,
-            @Body RequestBody body
-    );
-
+    Call<ResponseBody> updateFavorite(@Path("id") int conferenceId, @Body RequestBody body);
 
     @POST("conferences/{id}/ticket/")
-    Call<ResponseBody> sendCollaborationTicket(
-            @Header("Authorization") String token,
-            @Path("id") int conferenceId,
-            @Body RequestBody body
-    );
-
+    Call<ResponseBody> sendCollaborationTicket(@Path("id") int conferenceId, @Body RequestBody body);
 
     @GET("conferences/{id}/download/")
-    Call<ResponseBody> getDownloadInfo(
-            @Header("Authorization") String token,
-            @Path("id") int conferenceId
-    );
+    Call<ResponseBody> getDownloadInfo(@Path("id") int conferenceId);
 }

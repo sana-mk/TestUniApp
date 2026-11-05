@@ -46,7 +46,7 @@ public class CollaborationTicketActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_ticket);
 
-        apiService   = RetrofitClient.getInstance().getApiService();
+        apiService   = RetrofitClient.getInstance(this).getApiService();
         conferenceId = getIntent().getIntExtra(EXTRA_CONFERENCE_ID, -1);
         String conferenceTitle = getIntent().getStringExtra(EXTRA_CONFERENCE_TITLE);
 
@@ -128,8 +128,8 @@ public class CollaborationTicketActivity extends BaseActivity {
                     json.toString(),
                     MediaType.parse("application/json; charset=utf-8"));
 
-            apiService.sendCollaborationTicket(authToken, conferenceId, body)
-                    .enqueue(new Callback<ResponseBody>() {
+            apiService.sendCollaborationTicket(conferenceId, body)
+                    .enqueue(new Callback<>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             btnSend.setEnabled(true);

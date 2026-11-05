@@ -36,8 +36,8 @@ public class CourseModels {
         public String getReshteOnvan() { return reshteOnvan; }
 
         //MockData برای
-//        public void setCourse(Course course) { this.course = course; }
-//        public void setReshteOnvan(String reshteOnvan) { this.reshteOnvan = reshteOnvan; }
+        public void setCourse(Course course) { this.course = course; }
+        public void setReshteOnvan(String reshteOnvan) { this.reshteOnvan = reshteOnvan; }
     }
 
     public static class Course {
@@ -71,12 +71,12 @@ public class CourseModels {
         public int getReshteId() { return reshteId; }
 
         //MockData برای
-//        public void setId(int id) { this.id = id; }
-//        public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
-//        public void setOnvan(String onvan) { this.onvan = onvan; }
-//        public void setTedadVahed(int tedadVahed) { this.tedadVahed = tedadVahed; }
-//        public void setAcademicDegree(int academicDegree) { this.academicDegree = academicDegree; }
-//        public void setActive(boolean active) { isActive = active; }
-//        public void setReshteId(int reshteId) { this.reshteId = reshteId; }
+        public void setId(int id) { this.id = id; }
+        public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
+        public void setOnvan(String onvan) { this.onvan = onvan; }
+        public void setTedadVahed(int tedadVahed) { this.tedadVahed = tedadVahed; }
+        public void setAcademicDegree(int academicDegree) { this.academicDegree = academicDegree; }
+        public void setActive(boolean active) { isActive = active; }
+        public void setReshteId(int reshteId) { this.reshteId = reshteId; }
     }
 }

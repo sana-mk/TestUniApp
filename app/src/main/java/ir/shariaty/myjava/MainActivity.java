@@ -16,6 +16,7 @@ import ir.shariaty.myjava.api.ApiService;
 import ir.shariaty.myjava.api.RetrofitClient;
 import ir.shariaty.myjava.database.AppDatabaseHelper;
 import ir.shariaty.myjava.model.LoginModels;
+import ir.shariaty.myjava.utils.TokenManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        TokenManager tokenManager = new TokenManager(this);
+        if (tokenManager.isLoggedIn()) {
+            navigateToCourses();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         databaseHelper = new AppDatabaseHelper(this);
@@ -155,10 +163,11 @@ public class MainActivity extends AppCompatActivity {
     private void handleLogin() {
         String nationalCode = editTextNationalCode.getText().toString().trim();
         String password     = editTextPassword.getText().toString().trim();
-        String captchaInput = convertPersianToEnglish(
-                editTextCaptcha.getText().toString().trim());
+        String captchaInput = convertPersianToEnglish(editTextCaptcha.getText().toString().trim());
 
-        if (!validateInputs(nationalCode, password, captchaInput)) return;
+        if (!validateInputs(nationalCode, password, captchaInput)) {
+            return;
+        }
 
         if (USE_LOCAL_DATABASE) {
             loginWithLocalDatabase(nationalCode, password);
@@ -202,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loginWithApi(String username, String password) {
         buttonLogin.setEnabled(false);
-        ApiService apiService = RetrofitClient.getInstance().getApiService();
+        ApiService apiService = RetrofitClient.getInstance(MainActivity.this).getApiService();
 
         LoginModels.LoginRequest request = new LoginModels.LoginRequest(username, password);
 
@@ -210,15 +219,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<LoginModels.LoginResponse> call, @NonNull Response<LoginModels.LoginResponse> response) {
                 buttonLogin.setEnabled(true);
+
                 if (response.isSuccessful() && response.body() != null && response.body().getResult() != null) {
 
-                    String token = response.body().getResult().getAccessToken();
+                    LoginModels.AuthResult result = response.body().getResult();
+                    String accessToken = result.getAccessToken();
+                    String refreshToken = result.getRefreshToken();
+                    long expireInSeconds = result.getExpireInSeconds();
+
+                    TokenManager tokenManager = new TokenManager(MainActivity.this);
+                    tokenManager.saveTokens(accessToken, refreshToken, expireInSeconds);
+
                     Toast.makeText(MainActivity.this, "خوش آمدید!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(MainActivity.this, CoursesActivity.class);
-                    intent.putExtra("TOKEN", token);
-                    startActivity(intent);
-                    finish();
+                    navigateToCourses();
 
                 } else {
                     Toast.makeText(MainActivity.this, "اطلاعات ورود اشتباه است", Toast.LENGTH_SHORT).show();
@@ -233,6 +247,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "خطای شبکه", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void navigateToCourses() {
+        Intent intent = new Intent(MainActivity.this, CoursesActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void navigateToConferences() {

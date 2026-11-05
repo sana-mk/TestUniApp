@@ -64,7 +64,7 @@ public class ConferenceDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_conference_detail);
 
         dbHelper   = new AppDatabaseHelper(this);
-        apiService = RetrofitClient.getInstance().getApiService();
+        apiService = RetrofitClient.getInstance(this).getApiService();
 
         bindViews();
         loadDataFromIntent();
@@ -191,8 +191,8 @@ public class ConferenceDetailActivity extends BaseActivity {
             return;
         }
 
-        apiService.registerConference(authToken, conferenceId)
-                .enqueue(new Callback<ResponseBody>() {
+        apiService.registerConference(conferenceId)
+                .enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
@@ -233,7 +233,7 @@ public class ConferenceDetailActivity extends BaseActivity {
         }
 
         apiService.cancelRegistration(authToken, conferenceId)
-                .enqueue(new Callback<ResponseBody>() {
+                .enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {

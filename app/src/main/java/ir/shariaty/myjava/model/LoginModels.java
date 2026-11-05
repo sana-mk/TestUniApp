@@ -30,8 +30,40 @@ public class LoginModels {
         @SerializedName("accessToken")
         private String accessToken;
 
+        @SerializedName("refreshToken")
+        private String refreshToken;
+
+        @SerializedName("expireInSeconds")
+        private long expireInSeconds;
+
+        public String getAccessToken() { return accessToken; }
+        public String getRefreshToken() { return refreshToken; }
+        public long getExpireInSeconds() { return expireInSeconds; }
+    }
+
+    public static class RefreshTokenResponse {
+        @SerializedName("result")
+        private Result result;
+
+        @SerializedName("accessToken")
+        private String accessToken;
+
+        @SerializedName("expireInSeconds")
+        private long expireInSeconds;
+
         public String getAccessToken() {
-            return accessToken;
+            return (result != null && result.accessToken != null) ? result.accessToken : accessToken;
+        }
+
+        public long getExpireInSeconds() {
+            return result != null ? result.expireInSeconds : expireInSeconds;
+        }
+
+        public static class Result {
+            @SerializedName("accessToken")
+            public String accessToken;
+            @SerializedName("expireInSeconds")
+            public long expireInSeconds;
         }
     }
 }
