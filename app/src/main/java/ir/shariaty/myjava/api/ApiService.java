@@ -26,8 +26,8 @@ public interface ApiService {
     @POST("auth/login/")
     Call<ResponseBody> login(@Body RequestBody body);
 
-    @POST("auth/logout/")
-    Call<ResponseBody> logout();
+    @POST("api/TokenAuth/LogOut")
+    Call<okhttp3.ResponseBody> logOut();
 
     @POST("api/TokenAuth/RefreshToken")
     Call<LoginModels.RefreshTokenResponse> refreshToken(@Query("refreshToken") String refreshToken);

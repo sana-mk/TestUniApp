@@ -13,6 +13,7 @@ import ir.shariaty.myjava.api.ApiService;
 import ir.shariaty.myjava.api.RetrofitClient;
 import ir.shariaty.myjava.model.CourseModels;
 import ir.shariaty.myjava.utils.TokenManager;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,13 +34,20 @@ public class CoursesActivity extends BaseActivity {
             btnBack.setVisibility(View.VISIBLE);
             btnBack.setImageResource(R.drawable.logout);
             btnBack.setOnClickListener(v -> {
-                TokenManager tokenManager = new TokenManager(CoursesActivity.this);
-                tokenManager.clearToken();
+                btnBack.setEnabled(false);
 
-                Intent intent = new Intent(CoursesActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                ApiService apiService = RetrofitClient.getInstance(CoursesActivity.this).getApiService();
+                apiService.logOut().enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        executeLocalLogout();
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                        executeLocalLogout();
+                    }
+                });
             });
         }
 
@@ -49,6 +57,16 @@ public class CoursesActivity extends BaseActivity {
         rvCourses.setAdapter(adapter);
 
         fetchCourses();
+    }
+
+    private void executeLocalLogout() {
+        TokenManager tokenManager = new TokenManager(CoursesActivity.this);
+        tokenManager.clearToken();
+
+        Intent intent = new Intent(CoursesActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void fetchCourses() {
@@ -66,6 +84,7 @@ public class CoursesActivity extends BaseActivity {
                     } else {
                         adapter.submitList(response.body().getResult().getItems());
                     }
+
                 } else {
                     Toast.makeText(CoursesActivity.this, "خطا در دریافت لیست دروس", Toast.LENGTH_SHORT).show();
                 }
