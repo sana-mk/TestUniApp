@@ -39,13 +39,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        TokenManager tokenManager = new TokenManager(this);
-        if (tokenManager.isLoggedIn()) {
-            navigateToCourses();
-            return;
-        }
-
         setContentView(R.layout.activity_main);
 
         databaseHelper = new AppDatabaseHelper(this);

@@ -37,7 +37,7 @@ public class CoursesActivity extends BaseActivity {
                 btnBack.setEnabled(false);
 
                 ApiService apiService = RetrofitClient.getInstance(CoursesActivity.this).getApiService();
-                apiService.logOut().enqueue(new Callback<ResponseBody>() {
+                apiService.logOut().enqueue(new Callback<>() {
                     @Override
                     public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                         executeLocalLogout();
